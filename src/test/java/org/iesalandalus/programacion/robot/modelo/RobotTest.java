@@ -7,7 +7,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import javax.naming.OperationNotSupportedException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -68,7 +69,7 @@ class RobotTest {
     }
 
     @ParameterizedTest(name = "Cuando llamamos al constructor con una zona válida como [{0}, {1}] y una orientación {2} crea el robot con esa zona, orientado al {2} y situado en el centro de la zona => [{3}, {4}].")
-    @CsvSource({"10, 10, NORTE, 5, 5", "10, 5, ESTE, 5, 2", "5, 10, SURESTE, 2, 5", "5, 5, NOROESTE, 2, 2"})
+    @CsvSource({"10, 10, NORTE, 5, 5", "20, 10, ESTE, 10, 5", "10, 20, SURESTE, 5, 10", "20, 20, NOROESTE, 10, 10"})
     void constructorConZonaValidaYOrientacionValidaCreaRobotConDichaOrientacionYSituadoEnElCentroDeLaZona(int ancho, int alto, Orientacion orientacion, int x, int y) {
         Coordenada coordenada = getCoordenada(x, y);
         Zona zona = getZona(ancho, alto, coordenada);
@@ -121,7 +122,7 @@ class RobotTest {
         assertEquals("La coordenada no puede ser nula.", npe.getMessage());
     }
 
-    @ParameterizedTest(name = "Cuando llamamos al constructor con una coordenada [{0}, {1}] que no pertenece a la zona [{2}, {3}] lanza una excepción")
+    @ParameterizedTest(name = "Cuando llamamos al constructor con una zona [{0}, {1}], una orientación {2} y una coordenada que no pertenece a la zona [{3}, {4}] lanza una excepción")
     @CsvSource({"10, 10, SUR, -1, 0", "10, 10, NORTE, 0, -1", "20, 20, SURESTE, 21, 0", "20, 20, SUROESTE, 20, -1", "20, 20, OESTE, 21, 20", "20, 20, SUR, 20, 21", "20, 20, NORTE, -1, 20", "20, 20, NORTE, 0, 21"})
     void constructorConZonaValidaOrientacionValidaYCoordenadaNoPerteneceALaZonaLanzaExcepcion(int ancho, int alto, Orientacion orientacion, int x, int y) {
         Zona zona = new Zona(ancho, alto);
