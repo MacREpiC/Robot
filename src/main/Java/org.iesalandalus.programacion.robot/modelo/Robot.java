@@ -8,6 +8,7 @@ import java.sql.RowId;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.Objects;
+import java.util.Set;
 
 public class Robot {
     private Enumeration enumeration;
@@ -88,5 +89,14 @@ public class Robot {
             case OESTE -> nuevaX--;
         }
     }
-
+    public void girarALaDerecha(){
+        switch (orientacion) {
+            case ESTE -> setOrientacion(Orientacion.ESTE);
+        }
+    }
+    public void girarALaIzquierda(){
+        switch (orientacion) {
+            case OESTE -> setOrientacion(Orientacion.OESTE);
+        }
+    }
 }
