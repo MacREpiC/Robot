@@ -1,16 +1,8 @@
 package org.iesalandalus.programacion.robot.modelo;
 
-import com.sun.source.tree.CompilationUnitTree;
-
 import javax.naming.OperationNotSupportedException;
-import javax.swing.*;
-import java.awt.*;
-import java.sql.RowId;
 import java.util.Enumeration;
-import java.util.GregorianCalendar;
 import java.util.Objects;
-import java.util.Set;
-
 public class Robot {
     private Enumeration enumeration;
     //private ControladorRobot controladorRobot;
@@ -26,21 +18,26 @@ public class Robot {
 
     public Robot(Zona zona) {
         this();
-        Objects.requireNonNull(zona, "La orientación no puede ser un valor nulo.");
+        Objects.requireNonNull(zona, "La zona no puede ser nula.");
         this.zona = zona;
         coordenada = zona.getCentro();
     }
 
     public Robot(Zona zona, Orientacion orientacion){
         this(zona);
-        Objects.requireNonNull(orientacion, "La orientación no puede ser un valor nulo.");
+        Objects.requireNonNull(orientacion, "La orientación no puede ser nula.");
         this.orientacion = orientacion;
     }
     public Robot(Zona zona, Orientacion orientacion, Coordenada coordenada){
         this(zona, orientacion);
+        Objects.requireNonNull(coordenada, "La coordenada no puede ser nula.");
+        if (!zona.pertenece(coordenada)){
+            throw new IllegalArgumentException("La coordenada no pertenece a la zona.");
+        }
         this.coordenada = coordenada;
     }
     public Robot(Robot robot){
+        Objects.requireNonNull(robot, "El robot no puede ser nulo.");
         zona = robot.zona;
         orientacion = robot.orientacion;
         coordenada = robot.coordenada;
@@ -49,15 +46,14 @@ public class Robot {
         return zona;
     }
     public void setZona(Zona zona) {
-        Objects.requireNonNull(zona, "No puedo copiar una posición nula.");
-        this.zona = zona;
+        this.zona = Objects.requireNonNull(zona, "No puedo copiar una posición nula.");
     }
     public Orientacion getOrientacion() {
         return orientacion;
     }
 
     private void setOrientacion(Orientacion orientacion) {
-        Objects.requireNonNull(orientacion, "No puedo copiar una posición nula.");
+        this.orientacion = Objects.requireNonNull(orientacion, "No puedo copiar una posición nula.");
     }
 
     public Coordenada getCoordenada() {
@@ -65,16 +61,16 @@ public class Robot {
     }
 
     private void setCoordenada(Coordenada coordenada) {
-        Objects.requireNonNull(coordenada, "No puedo copiar una posición nula.");
+        this.coordenada = Objects.requireNonNull(coordenada, "No puedo copiar una posición nula.");
         if(zona.pertenece(coordenada)){
             this.coordenada = coordenada;
         } else{
             throw new IllegalArgumentException("Las coordenadas elegidas no son correctas");
         }
     }
-    public void avanzar() {
-        int nuevaX = 0;
-        int nuevaY = 0;
+    public void avanzar() throws OperationNotSupportedException {
+        int nuevaX = getCoordenada().x();
+        int nuevaY = getCoordenada().y();
         switch (orientacion){
             case NORTE -> nuevaY++;
             case NORESTE -> {
@@ -97,9 +93,11 @@ public class Robot {
             case ESTE -> nuevaX++;
             case OESTE -> nuevaX--;
         }
-        nuevaX *= getCoordenada().x();
-        nuevaY *= getCoordenada().y();
-        setCoordenada(new Coordenada(nuevaX, nuevaY));
+        if (zona.pertenece(new Coordenada(nuevaX, nuevaY))){
+            setCoordenada(new Coordenada(nuevaX, nuevaY));
+        } else {
+            throw new OperationNotSupportedException("No se puede avanzar, ya que se sale de la zona.");
+        }
     }
     public void girarALaDerecha(){
         switch (orientacion) {
