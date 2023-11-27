@@ -16,7 +16,7 @@ public record Zona(int ancho, int alto) {
     }
 
     public Zona() {
-        this(ANCHO_MINIMO, ANCHO_MINIMO);
+        this(ANCHO_MINIMO, ALTO_MAXIMO);
     }
 
     private void validarAncho(int ancho) {
@@ -29,8 +29,6 @@ public record Zona(int ancho, int alto) {
 
     private void validarAlto(int alto) {
         if (alto < ALTO_MINIMO || alto > ALTO_MAXIMO) {
-            throw new IllegalArgumentException("Alto no válido.");
-        } else if (alto > ALTO_MAXIMO) {
             throw new IllegalArgumentException("Alto no válido.");
         }
     }

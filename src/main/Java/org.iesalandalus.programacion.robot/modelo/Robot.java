@@ -4,8 +4,6 @@ import javax.naming.OperationNotSupportedException;
 import java.util.Enumeration;
 import java.util.Objects;
 public class Robot {
-    private Enumeration enumeration;
-    //private ControladorRobot controladorRobot;
     private Coordenada coordenada;
     private Zona zona;
     private Orientacion orientacion;
@@ -61,11 +59,9 @@ public class Robot {
     }
 
     private void setCoordenada(Coordenada coordenada) {
-        this.coordenada = Objects.requireNonNull(coordenada, "No puedo copiar una posición nula.");
-        if(zona.pertenece(coordenada)){
-            this.coordenada = coordenada;
-        } else{
-            throw new IllegalArgumentException("Las coordenadas elegidas no son correctas");
+        Objects.requireNonNull(coordenada, "No puedo copiar una posición nula.");
+        if(!zona.pertenece(coordenada)) {
+            throw new IllegalArgumentException("La coordenada no pertenece a la zona.");
         }
     }
     public void avanzar() throws OperationNotSupportedException {
@@ -129,19 +125,18 @@ public class Robot {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Robot robot = (Robot) o;
-        return Objects.equals(enumeration, robot.enumeration) && Objects.equals(coordenada, robot.coordenada) && Objects.equals(zona, robot.zona) && orientacion == robot.orientacion;
+        return Objects.equals(coordenada, robot.coordenada) && Objects.equals(zona, robot.zona) && orientacion == robot.orientacion;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(enumeration, coordenada, zona, orientacion);
+        return Objects.hash(coordenada, zona, orientacion);
     }
 
     @Override
     public String toString() {
         return "Robot{" +
-                "enumeration=" + enumeration +
-                ", coordenada=" + coordenada +
+                "coordenada=" + coordenada +
                 ", zona=" + zona +
                 ", orientacion=" + orientacion +
                 '}';

@@ -15,7 +15,6 @@ public enum Orientacion {
     private Orientacion(String nombre) {
         this.nombre = nombre;
     }
-
     @Override
     public String toString() {
         return nombre;
